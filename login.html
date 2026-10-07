@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logins Dashboard</title>
+    <!-- Imports the official Supabase Client library -->
+    <script src="https://jsdelivr.net"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #1c1c1e;
+            color: #ffffff;
+            margin: 0;
+        }
+        .login-container {
+            background-color: #2c2c2e;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            width: 320px;
+            text-align: center;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #48484a;
+            border-radius: 6px;
+            background-color: #1c1c1e;
+            color: white;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-login {
+            background-color: #34c759;
+            color: white;
+        }
+        .btn-signup {
+            background-color: #transparent;
+            color: #34c759;
+            border: 1px solid #34c759;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <h2>Sign In / Sign Up</h2>
+        <input type="email" id="email" placeholder="Your Email" />
+        <input type="password" id="password" placeholder="Password" />
+        
+        <button class="btn-login" onclick="signInUser()">Log In</button>
+        <button class="btn-signup" onclick="signUpUser()">Create Account</button>
+    </div>
+
+    <script>
+        // Your real Supabase credentials injected safely
+        const SUPABASE_URL = "https://whrslkfvubmqzzwotncs.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_eOO7o5ahzkX-wF3mh94ZvA_nV2-AEOf"; 
+
+        // Initialize connection to your Supabase application
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Function to create a brand new account in your database
+        async function signUpUser() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if(!email || !password) {
+                alert("Please fill out all fields.");
+                return;
+            }
+            
+            const { data, error } = await _supabase.auth.signUp({ email, password });
+            if (error) {
+                alert("Error signing up: " + error.message);
+            } else {
+                alert("Account initialized! Check your email inbox to verify your secure registration link.");
+            }
+        }
+
+        // Function to sign in existing registered accounts
+        async function signInUser() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if(!email || !password) {
+                alert("Please fill out all fields.");
+                return;
+            }
+            
+            const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+            if (error) {
+                alert("Login Failed: " + error.message);
+            } else {
+                alert("Success! Logged in as: " + data.user.email);
+                // Optional: redirect user to a dashboard here
+                // window.location.href = "/dashboard.html";
+            }
+        }
+    </script>
+</body>
+</html>
